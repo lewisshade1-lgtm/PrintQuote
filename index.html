@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PrintQuote">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>PrintQuote</title>
+<style>
+:root{--bg:#0d110f;--panel:#171e19;--panel2:#202a23;--line:#2c3930;--text:#f1f5f1;--muted:#a3b0a6;--green:#7ee0a0;--green2:#2f9e59;--red:#ff8585;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:92px}
+header{padding:calc(env(safe-area-inset-top) + 18px) 20px 16px;background:linear-gradient(135deg,#17221a,#101411);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border-radius:13px;background:var(--green);color:#102016;display:grid;place-items:center;font-weight:900;font-size:21px}.brand h1{font-size:21px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+main{max-width:680px;margin:auto;padding:18px 16px 24px}.view{display:none}.view.active{display:block}.section-title{font-size:19px;margin:5px 0 14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:var(--panel2);border-radius:14px;padding:14px}.stat small{color:var(--muted);display:block;margin-bottom:7px}.stat strong{font-size:23px}.green{color:var(--green)}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}
+label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}
+input,textarea,select{width:100%;background:#0f1511;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:12px;font:inherit;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--green2)}textarea{min-height:78px;resize:vertical}
+button{border:0;border-radius:12px;padding:13px 15px;font:600 14px inherit;cursor:pointer}
+.primary{background:var(--green);color:#102016;width:100%;font-weight:800}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.danger{color:var(--red);background:#321c1e;border:1px solid #633338}
+.actions{display:flex;gap:9px;margin-top:12px}.actions button{flex:1}
+.tabs{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#111813f2;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(env(safe-area-inset-bottom) + 8px)}
+.tab{background:transparent;color:var(--muted);padding:9px 2px;font-size:11px}.tab span{display:block;font-size:19px;margin-bottom:3px}.tab.active{color:var(--green)}
+.quote-preview{background:#f7f8f6;color:#172019;border-radius:14px;padding:18px;margin-top:12px}.quote-preview h3{margin:0 0 4px}.quote-preview .muted{color:#59655d}.quote-total{font-size:30px;font-weight:850;margin:8px 0}.quote-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #dce2dc;gap:12px}.quote-row:last-child{border:0}
+.item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item strong{display:block}.pill{font-size:11px;padding:5px 8px;border-radius:20px;background:#24392a;color:var(--green);white-space:nowrap}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}.hidden{display:none!important}
+@media(min-width:600px){main{padding-top:24px}.grid{gap:14px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">P</div><div><h1>PrintQuote</h1><p>Your 3D printing business assistant</p></div></div></header>
+<main>
+<section id="home" class="view active">
+  <h2 class="section-title">Business overview</h2>
+  <div class="grid">
+    <div class="stat"><small>Total quoted</small><strong id="statQuoted">£0</strong></div>
+    <div class="stat"><small>Estimated profit</small><strong class="green" id="statProfit">£0</strong></div>
+    <div class="stat"><small>Saved quotes</small><strong id="statCount">0</strong></div>
+    <div class="stat"><small>Outstanding deposits</small><strong id="statDeposits">£0</strong></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3 style="margin:0 0 8px">Quick start</h3><p class="muted" style="margin:0 0 14px">Create a customer quote with your current pricing rules.</p><button class="primary" onclick="showView('new')">＋ Create a new quote</button></div>
+  <div class="card"><h3 style="margin:0 0 8px">Your default rates</h3><div class="item"><span class="muted">Filament</span><strong>£15 / kg</strong></div><div class="item"><span class="muted">Machine time</span><strong>£2 / hour</strong></div><div class="item"><span class="muted">Failed print allowance</span><strong>10%</strong></div><div class="item"><span class="muted">Selling fee allowance</span><strong>5%</strong></div><div class="item"><span class="muted">Target profit margin</span><strong>30%</strong></div><p class="tiny">Change these defaults in Settings at any time.</p></div>
+</section>
+
+<section id="new" class="view">
+  <h2 class="section-title">Create a quote</h2>
+  <div class="card">
+    <label>Quote number</label><input id="quoteNo" placeholder="PQ-001">
+    <label>Customer name</label><input id="customer" placeholder="Customer name">
+    <label>Contact details (optional)</label><input id="contact" placeholder="Email or phone">
+    <label>Product / print name</label><input id="product" placeholder="e.g. Custom Iron Man helmet">
+    <label>Description and specifications</label><textarea id="description" placeholder="Size, colour, finish, custom requirements..."></textarea>
+    <div class="grid">
+      <div><label>Quantity</label><input id="qty" type="number" min="1" value="1"></div>
+      <div><label>Filament weight per item (g)</label><input id="weight" type="number" min="0" value="100"></div>
+      <div><label>Print hours per item</label><input id="hours" type="number" min="0" value="5"></div>
+      <div><label>Extra minutes</label><input id="minutes" type="number" min="0" max="59" value="0"></div>
+      <div><label>Packaging per item (£)</label><input id="packaging" type="number" min="0" step=".01" value="1"></div>
+      <div><label>Other costs per item (£)</label><input id="other" type="number" min="0" step=".01" value="0"></div>
+    </div>
+    <label>Additional customer notes</label><textarea id="notes">Unpainted white finish. Customer is responsible for painting and finishing.</textarea>
+    <button class="primary" style="margin-top:14px" onclick="calculateQuote()">Calculate quote</button>
+  </div>
+  <div id="result" class="card hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Quote preview</h3><span class="pill">Rounded up to £1</span></div>
+    <div class="quote-preview" id="preview"></div>
+    <div class="actions"><button class="secondary" onclick="copyQuote()">Copy quote</button><button class="secondary" onclick="shareQuote()">Share</button></div>
+    <button class="primary" style="margin-top:9px" onclick="saveQuote()">Save quote</button>
+    <p class="tiny" id="saveStatus"></p>
+  </div>
+</section>
+
+<section id="saved" class="view">
+  <h2 class="section-title">Saved quotes</h2>
+  <div class="card" id="quoteList"><p class="muted">No quotes saved yet.</p></div>
+</section>
+
+<section id="settings" class="view">
+  <h2 class="section-title">Business settings</h2>
+  <div class="card">
+    <label>Business name</label><input id="businessName" value="Custom 3D Prints">
+    <div class="grid">
+      <div><label>Filament price (£/kg)</label><input id="rateFilament" type="number" value="15" step=".01"></div>
+      <div><label>Machine rate (£/hour)</label><input id="rateMachine" type="number" value="2" step=".01"></div>
+      <div><label>Failed print allowance (%)</label><input id="rateWaste" type="number" value="10"></div>
+      <div><label>Selling fees (%)</label><input id="rateFees" type="number" value="5"></div>
+      <div><label>Target profit margin (%)</label><input id="rateMargin" type="number" value="30"></div>
+      <div><label>Deposit required (%)</label><input id="rateDeposit" type="number" value="50"></div>
+    </div>
+    <button class="primary" style="margin-top:15px" onclick="saveSettings()">Save business settings</button>
+    <p class="tiny" id="settingsStatus"></p>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Data and privacy</h3><p class="muted">Your saved quotes and settings are stored on this device in your browser. They are not sent to a server. If you clear website data or change devices, your quotes may be lost.</p><button class="secondary" onclick="exportData()">Export saved quotes (JSON)</button></div>
+</section>
+</main>
+<nav class="tabs">
+<button class="tab active" data-view="home" onclick="showView('home')"><span>⌂</span>Home</button>
+<button class="tab" data-view="new" onclick="showView('new')"><span>＋</span>New quote</button>
+<button class="tab" data-view="saved" onclick="showView('saved')"><span>▤</span>Quotes</button>
+<button class="tab" data-view="settings" onclick="showView('settings')"><span>⚙</span>Settings</button>
+</nav>
+<script>
+const $=id=>document.getElementById(id);
+const defaults={businessName:"Custom 3D Prints",filament:15,machine:2,waste:10,fees:5,margin:30,deposit:50};
+let settings={...defaults},quotes=[],currentQuote=null;
+const money=n=>"£"+Number(n||0).toFixed(2);
+function load(){try{settings={...defaults,...JSON.parse(localStorage.getItem("pq_settings")||"{}")};quotes=JSON.parse(localStorage.getItem("pq_quotes")||"[]")}catch(e){};populateSettings();refresh();$("quoteNo").value=nextNumber()}
+function populateSettings(){$("businessName").value=settings.businessName;$("rateFilament").value=settings.filament;$("rateMachine").value=settings.machine;$("rateWaste").value=settings.waste;$("rateFees").value=settings.fees;$("rateMargin").value=settings.margin;$("rateDeposit").value=settings.deposit}
+function saveSettings(){settings={businessName:$("businessName").value||defaults.businessName,filament:+$("rateFilament").value,machine:+$("rateMachine").value,waste:+$("rateWaste").value,fees:+$("rateFees").value,margin:+$("rateMargin").value,deposit:+$("rateDeposit").value};localStorage.setItem("pq_settings",JSON.stringify(settings));$("settingsStatus").textContent="Settings saved on this device.";refresh()}
+function nextNumber(){return "PQ-"+String(quotes.length+1).padStart(3,"0")}
+function showView(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===id));if(id==="saved")renderQuotes();if(id==="home")refresh();window.scrollTo(0,0)}
+function calculateQuote(){
+ const qty=Math.max(1,Math.floor(+$("qty").value||1)),weight=Math.max(0,+$("weight").value||0),time=Math.max(0,+$("hours").value||0)+Math.max(0,+$("minutes").value||0)/60;
+ const filament=weight*settings.filament/1000,machine=time*settings.machine,base=filament+machine,waste=base*settings.waste/100;
+ const packaging=Math.max(0,+$("packaging").value||0),other=Math.max(0,+$("other").value||0),cost=(base+waste+packaging+other)*qty;
+ const fee=settings.fees/100,margin=settings.margin/100;
+ if(fee<0||margin<0||fee+margin>=1){alert("Selling fees plus profit margin must be below 100%. Check Settings.");return}
+ const price=Math.ceil(cost/(1-fee-margin)-1e-9),feeAmount=price*fee,profit=price-cost-feeAmount,deposit=price*settings.deposit/100;
+ currentQuote={id:Date.now(),number:$("quoteNo").value||nextNumber(),customer:$("customer").value,contact:$("contact").value,product:$("product").value||"Custom 3D Printed Item",description:$("description").value,qty,weight,time,packaging,other,cost,price,feeAmount,profit,deposit,balance:price-deposit,notes:$("notes").value,date:new Date().toISOString(),business:settings.businessName};
+ $("preview").innerHTML=`<h3>${esc(currentQuote.business)}</h3><div class="muted">${esc(currentQuote.number)} · ${new Date().toLocaleDateString("en-GB")}</div><hr style="border-color:#dce2dc"><strong>${esc(currentQuote.product)}</strong><div class="muted">${esc(currentQuote.description||"As discussed")}</div><div class="quote-total">£${price}</div><div class="muted">Quantity: ${qty}</div><div class="quote-row"><span>Deposit (${settings.deposit}%)</span><strong>${money(deposit)}</strong></div><div class="quote-row"><span>Remaining balance</span><strong>${money(price-deposit)}</strong></div><p style="font-size:12px;margin-bottom:0">${esc(currentQuote.notes)}</p><p style="font-size:11px;color:#59655d">Quote valid for 14 days. Production begins after deposit and specification approval.</p>`;
+ $("result").classList.remove("hidden");$("saveStatus").textContent="";$("result").scrollIntoView({behavior:"smooth"});
+}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function quoteText(q){return `QUOTATION\n${q.business}\nQuote: ${q.number}\nDate: ${new Date(q.date).toLocaleDateString("en-GB")}\nCustomer: ${q.customer||"Customer"}\nContact: ${q.contact||"Not supplied"}\n\nProduct: ${q.product}\nDescription: ${q.description||"As discussed"}\nQuantity: ${q.qty}\n\nTOTAL: £${q.price}\nDeposit: ${money(q.deposit)}\nRemaining balance: ${money(q.balance)}\n\nNotes: ${q.notes}\nQuote valid for 14 days.`}
+async function copyQuote(){if(!currentQuote)return;try{await navigator.clipboard.writeText(quoteText(currentQuote));$("saveStatus").textContent="Quote copied."}catch(e){alert(quoteText(currentQuote))}}
+async function shareQuote(){if(!currentQuote)return;const text=quoteText(currentQuote);if(navigator.share){try{await navigator.share({title:"3D printing quote",text})}catch(e){}}else{copyQuote()}}
+function saveQuote(){if(!currentQuote)return;quotes.unshift(currentQuote);localStorage.setItem("pq_quotes",JSON.stringify(quotes));$("saveStatus").textContent="Quote saved on this iPhone.";refresh();$("quoteNo").value=nextNumber()}
+function renderQuotes(){const box=$("quoteList");if(!quotes.length){box.innerHTML='<p class="muted">No quotes saved yet.</p>';return}box.innerHTML=quotes.map(q=>`<div class="item"><div><strong>${esc(q.customer||"Customer")} · ${esc(q.product)}</strong><div class="tiny">${esc(q.number)} · ${new Date(q.date).toLocaleDateString("en-GB")}</div></div><div style="text-align:right"><strong class="green">£${q.price}</strong><div><button class="secondary" style="padding:6px 9px;margin-top:5px" onclick="viewSaved(${q.id})">View</button></div></div></div>`).join("")}
+function viewSaved(id){const q=quotes.find(x=>x.id===id);if(!q)return;currentQuote=q;alert(quoteText(q))}
+function refresh(){const total=quotes.reduce((s,q)=>s+q.price,0),profit=quotes.reduce((s,q)=>s+q.profit,0),deposits=quotes.reduce((s,q)=>s+q.balance,0);$("statQuoted").textContent=money(total);$("statProfit").textContent=money(profit);$("statCount").textContent=quotes.length;$("statDeposits").textContent=money(deposits);renderQuotes()}
+function exportData(){const blob=new Blob([JSON.stringify({settings,quotes},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="printquote-backup.json";a.click();URL.revokeObjectURL(url)}
+load();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body></html>
